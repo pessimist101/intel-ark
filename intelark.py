@@ -224,7 +224,7 @@ class IntelArk(commands.Cog):
             embed.add_field(name='AES Tech',value=data['AESTech'],inline=True)
         if data['SocketsSupported'] != None:
             embed.add_field(name='Sockets',value=data['SocketsSupported'],inline=True)
-        if (index['current'] != 1) and (index['max'] != 1):
+        if (index['max'] != 1):
             embed.set_footer(text=f"{index['current']} of {index['max']}")
         return embed
 
