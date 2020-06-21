@@ -197,7 +197,7 @@ class IntelArk(commands.Cog):
     async def make_ark_embed(self, data, index):
         embed = discord.Embed(colour=self.intelBlue)
         embed.set_author(name='Ark Search Result',url=data['Url'])
-        embed.add_field(name='Product Name',value=data['ProcessorNumber'],inline=True)
+        embed.add_field(name='Product Name',value=f"[{data['ProcessorNumber']}]({data['Url']})",inline=True)
         if data['ClockSpeedMax'] != None:
             embed.add_field(name='Clock Speed',value=f"{data['ClockSpeed']} / {data['ClockSpeedMax']}",inline=True)
         else:
