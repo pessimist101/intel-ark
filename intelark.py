@@ -15,6 +15,7 @@ class IntelArk(commands.Cog):
         self.intelBlue = 0x0071C5
         self.specialQueries = {
         '@everyone': "Hah. Nice try. Being very funny. Cheeky cunt.",
+        '@here': "Hilarious, I'm reporting you to the mods."
         ':(){ :|: & };: -': "This is a python bot, not a bash bot you nimwit."
         }
         self.headers = {'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.163 Safari/537.36'}
