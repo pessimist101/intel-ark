@@ -46,6 +46,7 @@ class IntelArk(commands.Cog):
             async with session.get(url, headers=self.headers, allow_redirects=True) as data:
                 dataText = await data.text()
                 page_soup = soup(dataText, "html.parser")
+                await session.close()
 
         if (page_soup.find("input",{"id":"FormRedirectUrl"})): # if only one result
             url = page_soup.find("input",{"id":"FormRedirectUrl"}).get('value')
@@ -172,6 +173,7 @@ class IntelArk(commands.Cog):
             async with session.get(url, headers=self.headers) as data:
                 dataText = await data.text()
                 page_soup = soup(dataText, "html.parser")
+                await session.close()
         specs = {}
         specs['Url'] = url
         specs['ProcessorNumber'] = page_soup.find("span",{"class":"value","data-key":"ProcessorNumber"}).contents[0].strip()
@@ -197,16 +199,18 @@ class IntelArk(commands.Cog):
         embed.set_author(name='Ark Search Result',url=data['Url'])
         embed.add_field(name='Product Name',value=data['ProcessorNumber'],inline=True)
         if data['ClockSpeedMax'] != None:
-            embed.add_field(name='Clock Speed/\nMax Clock Speed',value=f"{data['ClockSpeed']} / {data['ClockSpeedMax']}",inline=True)
+            embed.add_field(name='Clock Speed',value=f"{data['ClockSpeed']} / {data['ClockSpeedMax']}",inline=True)
         else:
             embed.add_field(name='Clock Speed',value=data['ClockSpeed'],inline=True)
         if data['HyperThreading'] == 'No':
             embed.add_field(name='Cores',value=data['CoreCount'],inline=True)
         elif data['HyperThreading'] == 'Yes':
             embed.add_field(name='Cores/Threads',value=f"{data['CoreCount']} / {data['ThreadCount']}",inline=True)
+        embed.add_field(name='TDP',value=data['MaxTDP'],inline=True)
         if data['VTD'] != None:
             embed.add_field(name='VTD',value=data['VTD'],inline=True)
         embed.add_field(name='AES Tech',value=data['AESTech'],inline=True)
+        embed.add_field(name='Sockets',value=data['SocketsSupported'],inline=True)
         embed.set_footer(text=f"{index['current']} of {index['max']}")
         return embed
 
