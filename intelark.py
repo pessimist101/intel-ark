@@ -1,6 +1,5 @@
-"""Cog for searching the Intel Ark website"""
 import discord
-from discord.ext import commands, tasks
+from discord.ext import commands
 import aiohttp
 import asyncio
 import bs4
@@ -9,6 +8,7 @@ import urllib.parse
 import re
 
 class IntelArk(commands.Cog):
+    """Search for Intel CPUs"""
 
     def __init__(self, client):
         self.client = client
@@ -175,15 +175,21 @@ class IntelArk(commands.Cog):
                 page_soup = soup(dataText, "html.parser")
                 await session.close()
         specs = {}
+        desiredSpecs = ['ProcessorNumber','CoreCount','ThreadCount','HyperThreading','ClockSpeed','SocketsSupported','MaxTDP','AESTech']
         specs['Url'] = url
-        specs['ProcessorNumber'] = page_soup.find("span",{"class":"value","data-key":"ProcessorNumber"}).contents[0].strip()
-        specs['CoreCount'] = page_soup.find("span",{"class":"value","data-key":"CoreCount"}).contents[0].strip()
-        specs['ThreadCount'] = page_soup.find("span",{"class":"value","data-key":"ThreadCount"}).contents[0].strip()
-        specs['HyperThreading'] = page_soup.find("span",{"class":"value","data-key":"HyperThreading"}).contents[0].strip()
-        specs['ClockSpeed'] = page_soup.find("span",{"class":"value","data-key":"ClockSpeed"}).contents[0].strip()
-        specs['SocketsSupported'] = page_soup.find("span",{"class":"value","data-key":"SocketsSupported"}).contents[0].strip()
-        specs['MaxTDP'] = page_soup.find("span",{"class":"value","data-key":"MaxTDP"}).contents[0].strip()
-        specs['AESTech'] = page_soup.find("span",{"class":"value","data-key":"AESTech"}).contents[0].strip()
+        for specItem in desiredSpecs:
+            try:
+                specs[specItem] = page_soup.find("span",{"class":"value","data-key":specItem}).contents[0].strip()
+            except AttributeError:
+                specs[specItem] = None
+        # specs['ProcessorNumber'] = page_soup.find("span",{"class":"value","data-key":"ProcessorNumber"}).contents[0].strip()
+        # specs['CoreCount'] = page_soup.find("span",{"class":"value","data-key":"CoreCount"}).contents[0].strip()
+        # specs['ThreadCount'] = page_soup.find("span",{"class":"value","data-key":"ThreadCount"}).contents[0].strip()
+        # specs['HyperThreading'] = page_soup.find("span",{"class":"value","data-key":"HyperThreading"}).contents[0].strip()
+        # specs['ClockSpeed'] = page_soup.find("span",{"class":"value","data-key":"ClockSpeed"}).contents[0].strip()
+        # specs['SocketsSupported'] = page_soup.find("span",{"class":"value","data-key":"SocketsSupported"}).contents[0].strip()
+        # specs['MaxTDP'] = page_soup.find("span",{"class":"value","data-key":"MaxTDP"}).contents[0].strip()
+        # specs['AESTech'] = page_soup.find("span",{"class":"value","data-key":"AESTech"}).contents[0].strip()
         try:
             specs['VTD'] = page_soup.find("span",{"class":"value","data-key":"VTD"}).contents[0].strip()
         except AttributeError:
@@ -198,20 +204,28 @@ class IntelArk(commands.Cog):
         embed = discord.Embed(colour=self.intelBlue)
         embed.set_author(name='Ark Search Result',url=data['Url'])
         embed.add_field(name='Product Name',value=f"[{data['ProcessorNumber']}]({data['Url']})",inline=True)
-        if data['ClockSpeedMax'] != None:
-            embed.add_field(name='Clock Speed',value=f"{data['ClockSpeed']} / {data['ClockSpeedMax']}",inline=True)
-        else:
-            embed.add_field(name='Clock Speed',value=data['ClockSpeed'],inline=True)
-        if data['HyperThreading'] == 'No':
+        if data['ClockSpeed'] != None:
+            if data['ClockSpeedMax'] != None:
+                embed.add_field(name='Clock Speed',value=f"{data['ClockSpeed']} / {data['ClockSpeedMax']}",inline=True)
+            else:
+                embed.add_field(name='Clock Speed',value=data['ClockSpeed'],inline=True)
+        if data['HyperThreading'] != None:
+            if data['HyperThreading'] == 'No':
+                embed.add_field(name='Cores',value=data['CoreCount'],inline=True)
+            elif data['HyperThreading'] == 'Yes':
+                embed.add_field(name='Cores/Threads',value=f"{data['CoreCount']} / {data['ThreadCount']}",inline=True)
+        if (data['HyperThreading'] == None) and (data['CoreCount'] != None):
             embed.add_field(name='Cores',value=data['CoreCount'],inline=True)
-        elif data['HyperThreading'] == 'Yes':
-            embed.add_field(name='Cores/Threads',value=f"{data['CoreCount']} / {data['ThreadCount']}",inline=True)
-        embed.add_field(name='TDP',value=data['MaxTDP'],inline=True)
+        if data['MaxTDP'] != None:
+            embed.add_field(name='TDP',value=data['MaxTDP'],inline=True)
         if data['VTD'] != None:
             embed.add_field(name='VTD',value=data['VTD'],inline=True)
-        embed.add_field(name='AES Tech',value=data['AESTech'],inline=True)
-        embed.add_field(name='Sockets',value=data['SocketsSupported'],inline=True)
-        embed.set_footer(text=f"{index['current']} of {index['max']}")
+        if data['AESTech'] != None:
+            embed.add_field(name='AES Tech',value=data['AESTech'],inline=True)
+        if data['SocketsSupported'] != None:
+            embed.add_field(name='Sockets',value=data['SocketsSupported'],inline=True)
+        if (index['current'] != 1) and (index['max'] != 1):
+            embed.set_footer(text=f"{index['current']} of {index['max']}")
         return embed
 
 def setup(client):
