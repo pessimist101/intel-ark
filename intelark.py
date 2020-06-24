@@ -28,9 +28,10 @@ class IntelArk(commands.Cog):
     @commands.command()
     async def ark(self, ctx, *searchTerm):
         """Search for Intel CPUs"""
-        if " ".join(searchTerm) in self.specialQueries:
-            await ctx.send(embed=discord.Embed(colour=self.intelBlue,description=self.specialQueries[" ".join(searchTerm)]))
-            return
+        for word in searchTerm:
+            if word in self.specialQueries:
+                await ctx.send(embed=discord.Embed(colour=self.intelBlue,description=self.specialQueries[" ".join(searchTerm)]))
+                return
 
         indexModifier = re.compile('r=[0-9]')
         if indexModifier.match(searchTerm[-1]):
