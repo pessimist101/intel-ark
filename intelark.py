@@ -79,7 +79,7 @@ class IntelArk(commands.Cog):
         # build list of URLs
         results = page_soup.findAll("div",{"class":"search-result"})
         urls = []
-        ignore = ['generation','ethernet','wireless','products formerly']
+        ignore = ['generation','ethernet','wireless','products formerly','heat sink']
         for item in results:
             trigger = 0
             itemTitle = item.find("h4",{"class":"result-title"}).find("a").contents[0].strip().lower()
