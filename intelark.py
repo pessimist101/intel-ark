@@ -79,8 +79,15 @@ class IntelArk(commands.Cog):
         # build list of URLs
         results = page_soup.findAll("div",{"class":"search-result"})
         urls = []
+        ignore = ['generation','ethernet','wireless','products formerly']
         for item in results:
-            if 'generation' in item.find("h4",{"class":"result-title"}).find("a").contents[0].strip().lower():
+            trigger = 0
+            itemTitle = item.find("h4",{"class":"result-title"}).find("a").contents[0].strip().lower()
+            for word in ignore:
+                if word in itemTitle:
+                    trigger = 1
+                    break
+            if trigger == 1:
                 continue
             else:
                 url = item.find("h4",{"class":"result-title"}).find("a").get('href')
