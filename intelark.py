@@ -33,12 +33,11 @@ class IntelArk(commands.Cog):
     @commands.command()
     async def ark(self, ctx, *searchTerm):
         """Search for Intel CPUs"""
-        searchTerm = " ".join(searchTerm).replace('`','``') # ve clean up ze string
         for word in searchTerm:
             if word in self.specialQueries:
-                await ctx.send(embed=discord.Embed(colour=self.intelBlue,description=self.specialQueries[" ".join(searchTerm)]))
+                await ctx.send(embed=discord.Embed(colour=self.intelBlue,description=self.specialQueries[word]))
                 return
-            if re.compile('<@![0-9]*>').match(word):
+            if re.compile('<@![0-9]{18}>').match(word):
                 await ctx.send(embed=discord.Embed(colour=self.intelBlue,description=f"<@{ctx.author.id}> pong!"))
                 return
 
@@ -72,7 +71,7 @@ class IntelArk(commands.Cog):
             return
 
         if (page_soup.find("h2",text="No products matching your request were found.")): # if no products found
-            embed = discord.Embed(colour=self.intelBlue,description=f"No results found for `{searchTerm}`")
+            embed = discord.Embed(colour=self.intelBlue,description=f"No results found for `{searchTerm.replace('`','``')}`")
             await ctx.send(embed=embed)
             return
 
