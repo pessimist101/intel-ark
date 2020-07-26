@@ -26,11 +26,6 @@ class IntelArk(commands.Cog):
         print('Intel Ark cog online')
 
     @commands.command()
-    async def test(self, ctx, *args):
-        await ctx.send(args)
-        print(args)
-
-    @commands.command()
     async def ark(self, ctx, *searchTerm):
         """Search for Intel CPUs"""
         for word in searchTerm:
