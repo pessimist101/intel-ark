@@ -7,6 +7,8 @@ from bs4 import BeautifulSoup as soup
 import urllib.parse
 import re
 
+desiredSpecs = ['ProcessorNumber','CoreCount','ThreadCount','HyperThreading','ClockSpeed','SocketsSupported','MaxTDP','AESTech','MaxMem']
+
 class IntelArk(commands.Cog):
     """Search for Intel CPUs"""
 
@@ -187,7 +189,6 @@ class IntelArk(commands.Cog):
                 page_soup = soup(dataText, "html.parser")
                 await session.close()
         specs = {}
-        desiredSpecs = ['ProcessorNumber','CoreCount','ThreadCount','HyperThreading','ClockSpeed','SocketsSupported','MaxTDP','AESTech']
         specs['Url'] = url
         for specItem in desiredSpecs:
             try:
@@ -221,13 +222,12 @@ class IntelArk(commands.Cog):
                 embed.add_field(name='Clock Speed',value=f"{data['ClockSpeed']} / {data['ClockSpeedMax']}",inline=True)
             else:
                 embed.add_field(name='Clock Speed',value=data['ClockSpeed'],inline=True)
-        if data['HyperThreading'] != None:
-            if data['HyperThreading'] == 'No':
-                embed.add_field(name='Cores',value=data['CoreCount'],inline=True)
-            elif data['HyperThreading'] == 'Yes':
-                embed.add_field(name='Cores/Threads',value=f"{data['CoreCount']} / {data['ThreadCount']}",inline=True)
-        if (data['HyperThreading'] == None) and (data['CoreCount'] != None):
-            embed.add_field(name='Cores',value=data['CoreCount'],inline=True)
+
+        if data['HyperThreading'] == 'No' or data['HyperThreading'] == None:
+            embed.add_field(name='Cores/Threads',value=f"{data['CoreCount']} / {data['CoreCount']}",inline=True)
+        elif data['HyperThreading'] == 'Yes':
+            embed.add_field(name='Cores/Threads',value=f"{data['CoreCount']} / {data['ThreadCount']}",inline=True)
+
         if data['MaxTDP'] != None:
             embed.add_field(name='TDP',value=data['MaxTDP'],inline=True)
         if data['VTD'] != None:
