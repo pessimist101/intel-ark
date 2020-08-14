@@ -59,7 +59,7 @@ class IntelArk(commands.Cog):
             await ctx.send(embed=embed)
             return
         elif type(data) is list: # If multiple results
-            index = {'min':0,'max':len(urls)-1}
+            index = {'min':0,'max':len(data)-1}
             if regexMatched == True:
                 newIndex = int(matchedString.split('r=')[1])
                 index['current'] = newIndex * -1 if newIndex < 0 else newIndex
