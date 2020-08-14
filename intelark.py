@@ -83,12 +83,12 @@ class IntelArk(commands.Cog):
             # Okay, the user has reacted with an emoji, let's find out which one!
             if reaction.emoji == '▶':
                 index['current'] +=  1
-                await self.editResult(data,index,messageObject)
+                await self.editResult(ctx, data,index,messageObject)
             if reaction.emoji == '◀':
                 index['current'] -= 1
-                await self.editResult(data,index,messageObject)
+                await self.editResult(ctx, data,index,messageObject)
 
-    async def editResult(self, urls, index, messageObject):
+    async def editResult(self, ctx, urls, index, messageObject):
         data = await self.get_cpu_data(urls[index['current']])
         embed = await self.make_ark_embed(data,index)
         await messageObject.edit(embed=embed)
@@ -105,10 +105,10 @@ class IntelArk(commands.Cog):
             # Okay, the user has reacted with an emoji, let's find out which one!
             if reaction.emoji == '▶':
                 index['current'] += 1
-                await self.editResult(urls,index,messageObject)
+                await self.editResult(ctx, urls,index,messageObject)
             if reaction.emoji == '◀':
                 index['current'] -= 1
-                await self.editResult(urls,index,messageObject)
+                await self.editResult(ctx, urls,index,messageObject)
 
     async def get_urls(self, searchTerm):
         url = f"https://ark.intel.com/content/www/us/en/ark/search.html?_charset_=UTF-8&q={searchTerm}"
