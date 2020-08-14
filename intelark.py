@@ -83,10 +83,10 @@ class IntelArk(commands.Cog):
             # Okay, the user has reacted with an emoji, let's find out which one!
             if reaction.emoji == '▶':
                 index['current'] +=  1
-                await self.editResult(urls,index,messageObject)
+                await self.editResult(data,index,messageObject)
             if reaction.emoji == '◀':
                 index['current'] -= 1
-                await self.editResult(urls,index,messageObject)
+                await self.editResult(data,index,messageObject)
 
     async def editResult(self, urls, index, messageObject):
         data = await self.get_cpu_data(urls[index['current']])
