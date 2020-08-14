@@ -88,11 +88,11 @@ class IntelArk(commands.Cog):
                 index['current'] -= 1
                 await self.editResult(ctx, data,index,messageObject)
 
-    async def editResult(self, ctx, urls, index, messageObject):
+    async def editResult(self, ctx, urls, index, messageObject, toRemove=None):
         data = await self.get_cpu_data(urls[index['current']])
         embed = await self.make_ark_embed(data,index)
         await messageObject.edit(embed=embed)
-        allowedEmojis = await self.add_buttons(ctx, messageObject,index)
+        allowedEmojis = await self.add_buttons(ctx, messageObject,index,toRemove)
         def reaction_info_check(reaction,user):
             return user == ctx.author and reaction.message.id == messageObject.id and reaction.emoji in allowedEmojis
 
@@ -105,10 +105,10 @@ class IntelArk(commands.Cog):
             # Okay, the user has reacted with an emoji, let's find out which one!
             if reaction.emoji == '▶':
                 index['current'] += 1
-                await self.editResult(ctx, urls,index,messageObject)
+                await self.editResult(ctx, urls,index,messageObject,reaction.emoji)
             if reaction.emoji == '◀':
                 index['current'] -= 1
-                await self.editResult(ctx, urls,index,messageObject)
+                await self.editResult(ctx, urls,index,messageObject,reaction.emoji)
 
     async def get_urls(self, searchTerm):
         url = f"https://ark.intel.com/content/www/us/en/ark/search.html?_charset_=UTF-8&q={searchTerm}"
@@ -191,7 +191,7 @@ class IntelArk(commands.Cog):
             embed.set_footer(text=f"{index['current']+1} of {index['max']+1}")
         return embed
 
-    async def add_buttons(self, ctx, messageObject, index):
+    async def add_buttons(self, ctx, messageObject, index, toRemove=None):
         messageObject = await messageObject.channel.fetch_message(messageObject.id)
         oldReacts = [i.emoji for i in messageObject.reactions if i.me]
         if index['current'] == index['min']: # first result, no back arrow required
@@ -201,8 +201,11 @@ class IntelArk(commands.Cog):
         if index['min'] < index['current'] < index['max']: # a middle result, both arrows required
             allowedEmojis = ['◀','▶']
         if oldReacts == allowedEmojis:
-            for reaction in [i for i in messageObject.reactions if not i.me]:
-                await messageObject.remove_reaction(reaction.emoji,ctx.author)
+            if toRemove != None:
+                await messageObject.remove_reaction(toRemove,ctx.author)
+            else:
+                for reaction in [i for i in messageObject.reactions if i.me]:
+                    await messageObject.remove_reaction(reaction.emoji,ctx.author)
         else:
             await messageObject.clear_reactions()
             for emoji in allowedEmojis:
