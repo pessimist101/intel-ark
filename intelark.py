@@ -201,7 +201,7 @@ class IntelArk(commands.Cog):
         if index['min'] < index['current'] < index['max']: # a middle result, both arrows required
             allowedEmojis = ['◀','▶']
         if oldReacts == allowedEmojis:
-            for reaction in [i for i in messageObject.reactions if not reaction.me]:
+            for reaction in [i for i in messageObject.reactions if not i.me]:
                 await messageObject.remove_reaction(reaction.emoji,ctx.author)
         else:
             await messageObject.clear_reactions()
