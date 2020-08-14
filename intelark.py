@@ -69,7 +69,7 @@ class IntelArk(commands.Cog):
         cpuData = await self.get_cpu_data(data[index['current']])
         arkEmbed = await self.make_ark_embed(cpuData,index)
         messageObject = await ctx.send(embed=arkEmbed)
-        allowedEmojis = await self.add_buttons(messageObject, index)
+        allowedEmojis = await self.add_buttons(ctx, messageObject, index)
 
         def reaction_info_check(reaction,user):
             return user == ctx.author and reaction.message.id == messageObject.id and reaction.emoji in allowedEmojis
@@ -92,7 +92,7 @@ class IntelArk(commands.Cog):
         data = await self.get_cpu_data(urls[index['current']])
         embed = await self.make_ark_embed(data,index)
         await messageObject.edit(embed=embed)
-        allowedEmojis = await self.add_buttons(messageObject,index)
+        allowedEmojis = await self.add_buttons(ctx, messageObject,index)
         def reaction_info_check(reaction,user):
             return user == ctx.author and reaction.message.id == messageObject.id and reaction.emoji in allowedEmojis
 
@@ -191,7 +191,7 @@ class IntelArk(commands.Cog):
             embed.set_footer(text=f"{index['current']+1} of {index['max']}")
         return embed
 
-    async def add_buttons(self, messageObject, index):
+    async def add_buttons(self, ctx, messageObject, index):
         messageObject = await messageObject.channel.fetch_message(messageObject.id)
         oldReacts = [i.emoji for i in messageObject.reactions if i.me]
         if index['current'] == index['min']: # first result, no back arrow required
