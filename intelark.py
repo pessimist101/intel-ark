@@ -194,14 +194,6 @@ class IntelArk(commands.Cog):
                 specs[specItem] = page_soup.find("span",{"class":"value","data-key":specItem}).contents[0].strip()
             except AttributeError:
                 specs[specItem] = None
-        # specs['ProcessorNumber'] = page_soup.find("span",{"class":"value","data-key":"ProcessorNumber"}).contents[0].strip()
-        # specs['CoreCount'] = page_soup.find("span",{"class":"value","data-key":"CoreCount"}).contents[0].strip()
-        # specs['ThreadCount'] = page_soup.find("span",{"class":"value","data-key":"ThreadCount"}).contents[0].strip()
-        # specs['HyperThreading'] = page_soup.find("span",{"class":"value","data-key":"HyperThreading"}).contents[0].strip()
-        # specs['ClockSpeed'] = page_soup.find("span",{"class":"value","data-key":"ClockSpeed"}).contents[0].strip()
-        # specs['SocketsSupported'] = page_soup.find("span",{"class":"value","data-key":"SocketsSupported"}).contents[0].strip()
-        # specs['MaxTDP'] = page_soup.find("span",{"class":"value","data-key":"MaxTDP"}).contents[0].strip()
-        # specs['AESTech'] = page_soup.find("span",{"class":"value","data-key":"AESTech"}).contents[0].strip()
         try:
             specs['VTD'] = page_soup.find("span",{"class":"value","data-key":"VTD"}).contents[0].strip()
         except AttributeError:
