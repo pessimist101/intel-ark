@@ -124,8 +124,6 @@ class IntelArk(commands.Cog):
             data = await self.get_cpu_data(url)
             return data
         if (page_soup.find("h2",text="No products matching your request were found.")): # if no products found
-            embed = discord.Embed(colour=self.intelBlue,description=f"No results found for `{searchTerm.replace('`','``')}`")
-            await ctx.send(embed=embed)
             return None
         # build list of URLs
         results = page_soup.findAll("div",{"class":"search-result"})
