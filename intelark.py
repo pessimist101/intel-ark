@@ -8,6 +8,7 @@ import urllib.parse
 import re
 
 desiredSpecs = ('ProcessorNumber','CoreCount','ThreadCount','HyperThreading','ClockSpeed','SocketsSupported','MaxTDP','AESTech','MaxMem')
+returnedSpecs = ('Url', 'ProcessorNumber', 'CoreCount', 'ThreadCount', 'HyperThreading', 'ClockSpeed', 'SocketsSupported', 'MaxTDP', 'AESTech', 'MaxMem', 'VTD', 'ClockSpeedMax')
 
 class IntelArk(commands.Cog):
     """Search for Intel CPUs"""
@@ -53,7 +54,7 @@ class IntelArk(commands.Cog):
             embed = discord.Embed(colour=self.intelBlue,description=f"No results found for `{searchTerm.replace('`','``')}`")
             await ctx.send(embed=embed)
             return
-        if type(data) is dict and data.keys() == desiredSpecs: # If only one result
+        if type(data) is dict and tuple(data.keys()) == returnedSpecs: # If only one result
             index = {'min':0,'current':0,'max':0}
             embed = await self.make_ark_embed(data,index)
             await ctx.send(embed=embed)
