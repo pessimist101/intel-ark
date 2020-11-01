@@ -158,14 +158,16 @@ class IntelArk(commands.Cog):
                 specs[specItem] = page_soup.find("span",{"class":"value","data-key":specItem}).contents[0].strip()
             except AttributeError:
                 specs[specItem] = None
-        try:
-            specs['VTD'] = page_soup.find("span",{"class":"value","data-key":"VTD"}).contents[0].strip()
-        except AttributeError:
-            specs['VTD'] = None
-        try:
-            specs['ClockSpeedMax'] = page_soup.find("span",{"class":"value","data-key":"ClockSpeedMax"}).contents[0].strip()
-        except AttributeError: # If the CPU doesn't have a boost frequency
-            specs['ClockSpeedMax'] = None
+        for specItem in ['VTD','ClockSpeedMax']:
+            try:
+                specs[specItem] = page_soup.find("span",{"class":"value","data-key":specItem}).contents[0].strip()
+            except AttributeError:
+                specs[specItem] = None
+        if specs['ClockSpeedMax'] == None:
+            try:
+                specs['ClockSpeedMax'] = page_soup.find("span",{"class":"value","data-key":specItem}).contents[0].strip()
+            except AttributeError:
+                specs['ClockSpeedMax'] = None
         return specs
 
     async def make_ark_embed(self, data, index):
